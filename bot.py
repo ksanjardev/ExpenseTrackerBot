@@ -315,3 +315,4 @@ def build_app(token: str, webhook: bool) -> Application:
     app.add_handler(CallbackQueryHandler(on_callback))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & private, on_text))
     return app
+
