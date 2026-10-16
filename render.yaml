@@ -7,9 +7,9 @@ services:
     startCommand: python main.py
     healthCheckPath: /
     envVars:
-      - key: BOT_TOKEN
+      - key: 8923723180:AAFI9x7hu-i7y5KGVeaORKiyx6bzM6y7YB0
         sync: false            # you paste it in the Render dashboard
-      - key: DATABASE_URL
+      - key: postgresql://postgres.zhmtudwfrmbuwmegoksm:expense_tracker123@aws-0-ap-south-1.pooler.supabase.com:5432/postgres
         sync: false            # Neon connection string
       - key: WEBHOOK_SECRET
         generateValue: true
