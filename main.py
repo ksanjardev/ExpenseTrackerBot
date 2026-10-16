@@ -42,7 +42,9 @@ def make_asgi():
     from starlette.responses import JSONResponse, PlainTextResponse, Response
     from starlette.routing import Route
 
-    secret = config.WEBHOOK_SECRET or hashlib.sha256(("wh" + config.BOT_TOKEN).encode()).hexdigest()[:40]
+    secret = hashlib.sha256(
+        (config.WEBHOOK_SECRET or ("wh" + config.BOT_TOKEN)).encode()
+    ).hexdigest()
     app = bot.build_app(config.BOT_TOKEN, webhook=True)
 
     @contextlib.asynccontextmanager
@@ -50,11 +52,13 @@ def make_asgi():
         async with app:
             await bot.setup_commands(app)
             await app.start()
-            await app.bot.set_webhook(f"{config.WEBHOOK_URL}/telegram", secret_token=secret,
-                                      allowed_updates=Update.ALL_TYPES)
-            log.info("webhook set -> %s/telegram", config.WEBHOOK_URL)
-            yield
-            await app.stop()
+            try:
+                await app.bot.set_webhook(f"{config.WEBHOOK_URL}/telegram", secret_token=secret,
+                                          allowed_updates=Update.ALL_TYPES)
+                log.info("webhook set -> %s/telegram", config.WEBHOOK_URL)
+                yield
+            finally:
+                await app.stop()
 
     async def telegram(request: Request):
         if not hmac.compare_digest(request.headers.get("X-Telegram-Bot-Api-Secret-Token", ""), secret):
