@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: expense-bot
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    healthCheckPath: /
+    envVars:
+      - key: BOT_TOKEN
+        sync: false            # you paste it in the Render dashboard
+      - key: DATABASE_URL
+        sync: false            # Neon connection string
+      - key: WEBHOOK_SECRET
+        generateValue: true
+      - key: TICK_KEY
+        generateValue: true    # copy this value into the cron-job.org URL
